@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Map Story</title>
+
+    <!-- 1. Config must load first so the theme script can read STORY_CONFIG -->
+    <script src="data/story-config.js"></script>
+
+    <!-- 2. Inline theme pre-init: reads STORY_CONFIG to avoid flash of wrong theme -->
+    <script>
+      (function () {
+        try {
+          var cfg = window.STORY_CONFIG || {};
+          var key = (cfg.themeKey) || "map-story-theme";
+          var ui  = cfg.ui || {};
+          var stored = window.localStorage && window.localStorage.getItem(key);
+          var theme  = (stored === "dark" || stored === "light")
+            ? stored
+            : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark" : "light");
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.dataset.initialThemeLabel =
+            theme === "dark"
+              ? (ui.themeLight  || "Light")
+              : (ui.themeDark   || "Dark");
+          if (ui.lang) document.documentElement.lang = ui.lang;
+          if (ui.pageTitle) document.title = ui.pageTitle;
+        } catch (e) {
+          document.documentElement.dataset.theme = "light";
+          document.documentElement.dataset.initialThemeLabel = "Dark";
+        }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://tile.openstreetmap.org">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+
+    <!-- ═══ HERO ════════════════════════════════════════════════════════════ -->
+    <header class="hero">
+      <nav class="topbar">
+        <a href="#map" class="brand" id="nav-brand">Map Story</a>
+        <div class="nav-links">
+          <a href="#collections" id="nav-collections">Collections</a>
+          <a href="#timeline"    id="nav-timeline">Timeline</a>
+          <a href="#detail"      id="nav-detail">Detail</a>
+          <a href="#sources"     id="nav-sources">Sources</a>
+          <button id="theme-toggle" class="theme-toggle" type="button"
+            aria-pressed="false">Dark</button>
+        </div>
+      </nav>
+      <div class="hero-content">
+        <p class="eyebrow" id="hero-eyebrow">Place · Time · Story</p>
+        <h1 id="hero-title">Map Story</h1>
+        <p class="hero-copy" id="hero-copy">Explore places, works, and events on an interactive map.</p>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- ═══ FILTER CONTROLS ══════════════════════════════════════════════ -->
+      <section class="controls-section">
+        <div>
+          <p class="section-kicker">Filter</p>
+          <h2 id="filter-title">Explore by city, period, and genre</h2>
+        </div>
+        <form class="filters" onsubmit="return false">
+          <label id="label-search">
+            Search
+            <input
+              id="search-filter"
+              class="search-input"
+              type="search"
+              placeholder="Work / city / genre"
+              autocomplete="off"
+            >
+          </label>
+          <label id="label-city">
+            City
+            <select id="city-filter"></select>
+          </label>
+          <!-- Period label is hidden when STORY_CONFIG.periods is empty -->
+          <label id="label-period">
+            Period
+            <!-- Options are injected by script.js from STORY_CONFIG.periods -->
+            <select id="period-filter"></select>
+          </label>
+          <label id="label-genre">
+            Genre
+            <select id="genre-filter"></select>
+          </label>
+        </form>
+      </section>
+
+      <!-- ═══ MAP + TIMELINE ═══════════════════════════════════════════════ -->
+      <section class="explorer">
+        <div class="map-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-kicker" id="map-kicker">Map</p>
+              <h2 id="map-title">Locations</h2>
+            </div>
+            <p id="result-count" aria-live="polite"></p>
+          </div>
+          <div id="map"></div>
+          <p id="map-warning" hidden>
+            Map tiles require network access; timeline and detail remain readable offline.
+          </p>
+        </div>
+
+        <aside class="timeline-panel" id="timeline">
+          <div class="panel-header compact">
+            <div>
+              <p class="section-kicker" id="timeline-kicker">Timeline</p>
+              <h2 id="timeline-title">Works &amp; Events</h2>
+            </div>
+          </div>
+          <div id="timeline-selection" class="timeline-selection" hidden>
+            <span id="timeline-selection-text"></span>
+            <button id="timeline-detail-link" type="button">View detail</button>
+          </div>
+          <div id="timeline-list" class="timeline-list"></div>
+        </aside>
+      </section>
+
+      <!-- ═══ DETAIL CARD ══════════════════════════════════════════════════ -->
+      <section class="detail-section" id="detail">
+        <div class="detail-main">
+          <p class="section-kicker" id="detail-kicker">Detail</p>
+          <h2 id="detail-work">Select a location or year</h2>
+          <p id="detail-meta" class="detail-meta">Click a map marker or timeline item to see details here.</p>
+
+          <div id="detail-collections" class="detail-collections" hidden></div>
+
+          <div id="detail-listening" class="detail-listening" hidden>
+            <strong id="detail-listening-target"></strong>
+            <span   id="detail-listening-note"></span>
+            <div    id="detail-listening-links"></div>
+          </div>
+
+          <div id="detail-place" class="place-note" hidden>
+            <span id="detail-place-kind"></span>
+            <strong id="detail-place-name"></strong>
+            <span   id="detail-place-address"></span>
+            <p      id="detail-place-note"></p>
+            <a id="detail-place-source" href="#" target="_blank" rel="noreferrer"
+              >View place source</a>
+            <figure id="detail-place-image" class="place-image" hidden>
+              <img id="detail-place-image-img" alt="" loading="lazy">
+              <figcaption>
+                <span id="detail-place-image-caption"></span>
+                <a id="detail-place-image-source" href="#" target="_blank" rel="noreferrer"
+                  >Image source</a>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="detail-grid">
+            <article>
+              <h3 id="detail-context-heading">Context</h3>
+              <p id="detail-context">Waiting for selection.</p>
+            </article>
+            <article>
+              <h3 id="detail-meaning-heading">Meaning</h3>
+              <p id="detail-meaning">Waiting for selection.</p>
+            </article>
+          </div>
+
+          <div class="detail-actions">
+            <button id="detail-map-link" type="button" hidden>View on map</button>
+            <a
+              id="detail-source"
+              class="source-link"
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              hidden
+            >View source</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ COLLECTIONS ══════════════════════════════════════════════════ -->
+      <section class="collections-section" id="collections">
+        <div class="section-heading">
+          <p class="section-kicker" id="collections-kicker">Collections</p>
+          <h2 id="collections-title">Grouped by theme or curation</h2>
+        </div>
+        <nav id="collection-nav" class="collection-nav"></nav>
+        <div id="collection-list" class="collection-list"></div>
+      </section>
+
+      <!-- ═══ SOURCES ══════════════════════════════════════════════════════ -->
+      <section class="sources-section" id="sources">
+        <p class="section-kicker" id="sources-kicker">Sources</p>
+        <h2 id="sources-title">References</h2>
+        <p id="sources-policy">
+          Each entry includes a source label and URL.
+          Uncertain or approximate claims use conservative phrasing.
+        </p>
+        <div id="source-list" class="source-list"></div>
+      </section>
+
+    </main>
+
+    <footer>
+      <p id="footer-note">Static site · Leaflet + OpenStreetMap · Data in data/story-data.json</p>
+    </footer>
+
+    <!-- 3. Leaflet runtime -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <!-- 4. Fallback data (file:// access) -->
+    <script src="data/story-data.js"></script>
+    <!-- 5. App logic -->
+    <script src="script.js"></script>
+
+  </body>
+</html>

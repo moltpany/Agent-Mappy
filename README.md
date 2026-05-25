@@ -51,6 +51,15 @@ Agent-Mappy is not a hosted map platform. It is a repo-shaped workflow for agent
 │   │   └── SKILL.md
 │   └── static-map-site-builder/
 │       └── SKILL.md
+├── templates/
+│   └── map-story-site/
+│       ├── index.html
+│       ├── styles.css
+│       ├── script.js
+│       ├── data/
+│       │   ├── story-config.js
+│       │   └── story-data.js
+│       └── README.md
 ├── tests/
 │   └── validate.js
 ├── SYNC.md
@@ -73,6 +82,17 @@ examples/mozart-journey/mozart-journey.json
 
 The data file is intentionally compatible with the original Mozart Journey static page pattern: one JSON array of entries with coordinates, dates, source fields, optional place details, optional listening links, and collection ids.
 
+## Starting a New Map Story from the Template
+
+```bash
+cp -r templates/map-story-site/ my-story/
+# Edit my-story/data/story-config.js
+# Replace my-story/data/story-data.js with your data
+python -m http.server 8000   # open http://localhost:8000
+```
+
+See `templates/map-story-site/README.md` for full customisation instructions.
+
 ## How Agents Should Use This
 
 1. Use `map-story-planner` before creating a new map story.
@@ -88,7 +108,7 @@ The data file is intentionally compatible with the original Mozart Journey stati
 | Framework README | Ready | Project positioning and usage |
 | Map story schema | Ready | Shared JSON contract for entries |
 | Mozart Journey example | Ready | First case study migrated from the portfolio site |
-| Static site template | Next | Generic HTML/CSS/JS version of the Mozart Journey interface |
+| Static site template | Ready | Generic HTML/CSS/JS version of the Mozart Journey interface |
 | Source audit helper | Next | Optional script to report missing or weak source fields |
 | Multi-story examples | Later | Writers, trips, exhibitions, research fieldwork |
 

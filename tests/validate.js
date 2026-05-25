@@ -83,12 +83,40 @@ function validateRequiredFiles() {
   }
 }
 
+function validateTemplate() {
+  const templateFiles = [
+    "templates/map-story-site/index.html",
+    "templates/map-story-site/styles.css",
+    "templates/map-story-site/script.js",
+    "templates/map-story-site/data/story-config.js",
+    "templates/map-story-site/data/story-data.js",
+  ];
+  for (const file of templateFiles) {
+    assert(exists(file), `template file should exist: ${file}`);
+  }
+  // Verify story-config.js exports STORY_CONFIG
+  const configText = fs.readFileSync(path.join(root, "templates/map-story-site/data/story-config.js"), "utf8");
+  assert(configText.includes("window.STORY_CONFIG"), "story-config.js should assign window.STORY_CONFIG");
+  // Verify story-data.js exports the fallback variable
+  const dataText = fs.readFileSync(path.join(root, "templates/map-story-site/data/story-data.js"), "utf8");
+  assert(dataText.includes("window.MAP_STORY_DATA"), "story-data.js should assign window.MAP_STORY_DATA");
+  // Verify script.js exposes MapStory test interface
+  const scriptText = fs.readFileSync(path.join(root, "templates/map-story-site/script.js"), "utf8");
+  assert(scriptText.includes("window.MapStory"), "script.js should expose window.MapStory");
+  // Verify index.html loads story-config.js before the theme script
+  const htmlText = fs.readFileSync(path.join(root, "templates/map-story-site/index.html"), "utf8");
+  assert(htmlText.includes("story-config.js"), "index.html should load story-config.js");
+  assert(htmlText.includes("story-data.js"),   "index.html should load story-data.js");
+  assert(htmlText.includes("script.js"),        "index.html should load script.js");
+}
+
 const tests = [
   validateRequiredFiles,
   validateRegistry,
   validateSchema,
   validateMozartExample,
   validateSkills,
+  validateTemplate,
 ];
 
 for (const test of tests) {
