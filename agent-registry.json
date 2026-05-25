@@ -1,0 +1,97 @@
+{
+  "repository": "Agent-Mappy",
+  "description": "Source-grounded map storytelling framework for agent-maintained static map narratives",
+  "version": "0.1.0",
+  "target_platform": "Codex/OpenClaw-style agent workflows",
+  "schemas": [
+    {
+      "id": "map-story-entry",
+      "file": "schemas/map-story.schema.json",
+      "description": "JSON schema for map story entries"
+    }
+  ],
+  "examples": [
+    {
+      "id": "mozart-journey",
+      "name": "Mozart Journey",
+      "description": "A Chinese static map story about Mozart's travels, works, cities, sources, and personal collections",
+      "file": "examples/mozart-journey/mozart-journey.json"
+    }
+  ],
+  "skills": [
+    {
+      "id": "map-story-planner",
+      "name": "Map Story Planner",
+      "description": "Plan the scope, audience, evidence rules, collection model, and static publishing target for a new map story",
+      "status": "ready",
+      "file": "skills/map-story-planner/SKILL.md",
+      "triggers": [
+        "plan a map story",
+        "create a map narrative",
+        "start an Agent-Mappy project",
+        "turn this topic into a map",
+        "design a source-grounded map story"
+      ],
+      "outputs": [
+        "story scope",
+        "entry schema decisions",
+        "collection model",
+        "source policy",
+        "implementation checklist"
+      ]
+    },
+    {
+      "id": "source-grounded-entry-writer",
+      "name": "Source-Grounded Entry Writer",
+      "description": "Create or revise map story entries with conservative wording, citations, coordinates, and collection metadata",
+      "status": "ready",
+      "file": "skills/source-grounded-entry-writer/SKILL.md",
+      "triggers": [
+        "add map story entries",
+        "revise a map entry",
+        "source-grounded entry",
+        "add Mozart Journey data",
+        "fact-check a map story node"
+      ],
+      "outputs": [
+        "valid JSON entries",
+        "source summaries",
+        "uncertainty notes",
+        "collection assignments"
+      ]
+    },
+    {
+      "id": "static-map-site-builder",
+      "name": "Static Map Site Builder",
+      "description": "Build or adapt a no-backend static map site from a valid Agent-Mappy dataset",
+      "status": "ready",
+      "file": "skills/static-map-site-builder/SKILL.md",
+      "triggers": [
+        "build a static map site",
+        "make this dataset browsable",
+        "create a Leaflet map story",
+        "publish an Agent-Mappy story",
+        "adapt Mozart Journey into a template"
+      ],
+      "outputs": [
+        "static HTML/CSS/JS",
+        "map markers",
+        "timeline",
+        "detail cards",
+        "search and collection navigation"
+      ]
+    }
+  ],
+  "discovery_keywords": [
+    "map-storytelling",
+    "source-grounded",
+    "static-site",
+    "leaflet",
+    "timeline",
+    "agent-workflow",
+    "json-schema",
+    "github-pages",
+    "case-study",
+    "mozart-journey"
+  ]
+}
