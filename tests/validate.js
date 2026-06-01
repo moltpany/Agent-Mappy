@@ -56,6 +56,12 @@ function validateMozartExample() {
     assert(typeof entry.lat === "number" && entry.lat >= -90 && entry.lat <= 90, `${entry.id} should include valid latitude`);
     assert(typeof entry.lng === "number" && entry.lng >= -180 && entry.lng <= 180, `${entry.id} should include valid longitude`);
     assert(entry.source && entry.source.label && entry.source.url && entry.source.summary, `${entry.id} should include source label, url, and summary`);
+    if (entry.sources !== undefined) {
+      assert(Array.isArray(entry.sources) && entry.sources.length >= 1, `${entry.id} sources should be a non-empty array when present`);
+      for (const s of entry.sources) {
+        assert(s && s.label && s.url && s.summary, `${entry.id} each source should include label, url, and summary`);
+      }
+    }
     if (entry.place) {
       assert(entry.place.name && entry.place.address && entry.place.note, `${entry.id} place should include name, address, and note`);
       assert(entry.place.source && entry.place.source.label && entry.place.source.url, `${entry.id} place should include a source`);

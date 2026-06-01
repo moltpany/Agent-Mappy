@@ -35,6 +35,12 @@
       "context": { "type": "string", "minLength": 1 },
       "meaning": { "type": "string", "minLength": 1 },
       "source": { "$ref": "#/$defs/source" },
+      "sources": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "$ref": "#/$defs/source" },
+        "description": "Optional. Primary source plus any cross-checking secondary sources, primary first. The required single `source` remains the canonical primary for backward compatibility."
+      },
       "place": {
         "type": "object",
         "additionalProperties": true,

@@ -86,11 +86,17 @@ The data file is intentionally compatible with the original Mozart Journey stati
 | Module | Status | Description |
 | --- | --- | --- |
 | Framework README | Ready | Project positioning and usage |
-| Map story schema | Ready | Shared JSON contract for entries |
+| Map story schema | Ready | Shared JSON contract for entries (incl. optional `sources` array) |
+| Sourcing & certainty method | Ready | Source priority ladder, copyright red line, place-certainty scale |
+| Build pitfalls checklist | Ready | Known map/detail/mobile issues folded back from a downstream work |
 | Mozart Journey example | Ready | First case study migrated from the portfolio site |
 | Static site template | Next | Generic HTML/CSS/JS version of the Mozart Journey interface |
 | Source audit helper | Next | Optional script to report missing or weak source fields |
 | Multi-story examples | Later | Writers, trips, exhibitions, research fieldwork |
+
+> Some of these were learned from a downstream Agent-Mappy-style work (a music
+> diary) and folded back into the framework — the molting loop in practice:
+> the framework improves from what its derived works discover.
 
 ## License
 

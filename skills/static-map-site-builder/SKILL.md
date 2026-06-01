@@ -33,6 +33,30 @@ Use this skill to build a small static site from an Agent-Mappy dataset.
 5. Add tests for filtering, search, collection links, and data shape.
 6. Run validation and manually inspect mobile layout in a browser.
 
+## Known Pitfalls (check these every build)
+
+These are real issues seen in shipped Agent-Mappy-style sites. Handle them
+explicitly rather than discovering them in production:
+
+- **Overlapping markers at shared coordinates.** When several entries share the
+  same `lat`/`lng` (e.g. multiple works in one city), their markers stack and
+  only the top one is clickable — the rest become unreachable. Group entries by
+  coordinate into one location marker (show the count) whose popup lists every
+  entry at that point, each individually selectable. Prefer finer per-entry
+  coordinates where the source supports them so fewer points collide.
+- **Empty detail panel on first load.** If nothing is selected initially, the
+  detail card sits on placeholder text ("pending…") and looks broken. Auto-select
+  the first visible entry after the initial render (and after a filter change
+  that hides the current selection), so the panel always shows real content.
+- **Mobile filter overflow.** A `<select>` sizes to its longest option, so long
+  labels (full names, bilingual strings) can push the control past the viewport.
+  Give filter controls `min-width: 0` and `width: 100%` inside a flex container,
+  and stack filters one per row on narrow screens.
+- **Popups ignoring the theme.** Default Leaflet popups are light-on-white and
+  jar in dark mode. Style the popup wrapper/tip to follow the page theme tokens.
+- **Selected entry invisible on the map.** When an entry is chosen from a list,
+  highlight its marker (size/colour) so the map and the detail stay in sync.
+
 ## Verification
 
 Run:
