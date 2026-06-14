@@ -1,7 +1,7 @@
 {
   "repository": "Agent-Mappy",
   "description": "Source-grounded map storytelling framework for agent-maintained static map narratives",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "target_platform": "Codex/OpenClaw-style agent workflows",
   "schemas": [
     {
@@ -16,6 +16,12 @@
       "name": "Mozart Journey",
       "description": "A Chinese static map story about Mozart's travels, works, cities, sources, and personal collections",
       "file": "examples/mozart-journey/mozart-journey.json"
+    },
+    {
+      "id": "beethoven-journey",
+      "name": "Beethoven Journey",
+      "description": "A Chinese static map story about Beethoven's life from Bonn to Vienna, his signature and pre-deafness works, sources, and core life-stage collections",
+      "file": "examples/beethoven-journey/beethoven-journey.json"
     }
   ],
   "skills": [
@@ -92,6 +98,7 @@
     "json-schema",
     "github-pages",
     "case-study",
-    "mozart-journey"
+    "mozart-journey",
+    "beethoven-journey"
   ]
 }

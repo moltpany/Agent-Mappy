@@ -41,9 +41,12 @@ Agent-Mappy is not a hosted map platform. It is a repo-shaped workflow for agent
 ├── schemas/
 │   └── map-story.schema.json
 ├── examples/
-│   └── mozart-journey/
+│   ├── mozart-journey/
+│   │   ├── README.md
+│   │   └── mozart-journey.json
+│   └── beethoven-journey/
 │       ├── README.md
-│       └── mozart-journey.json
+│       └── beethoven-journey.json
 ├── skills/
 │   ├── map-story-planner/
 │   │   └── SKILL.md
@@ -65,10 +68,11 @@ Validate the framework files:
 node tests/validate.js
 ```
 
-Use the Mozart example as the first case study:
+Use the bundled case studies as references:
 
 ```text
 examples/mozart-journey/mozart-journey.json
+examples/beethoven-journey/beethoven-journey.json
 ```
 
 The data file is intentionally compatible with the original Mozart Journey static page pattern: one JSON array of entries with coordinates, dates, source fields, optional place details, optional listening links, and collection ids.
@@ -90,6 +94,7 @@ The data file is intentionally compatible with the original Mozart Journey stati
 | Sourcing & certainty method | Ready | Source priority ladder, copyright red line, place-certainty scale |
 | Build pitfalls checklist | Ready | Known map/detail/mobile issues folded back from a downstream work |
 | Mozart Journey example | Ready | First case study migrated from the portfolio site |
+| Beethoven Journey example | Ready | Second case study, confirming the pattern is subject-agnostic |
 | Static site template | Next | Generic HTML/CSS/JS version of the Mozart Journey interface |
 | Source audit helper | Next | Optional script to report missing or weak source fields |
 | Multi-story examples | Later | Writers, trips, exhibitions, research fieldwork |
