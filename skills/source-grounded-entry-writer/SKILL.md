@@ -74,6 +74,15 @@ point is better than a precise-looking guess.
 7. Validate JSON syntax and required fields.
 8. Update any worklist or audit file used by the project, recording the source
    tier and any certainty fallbacks.
+9. **If the story is bilingual, keep the overlay in lockstep.** When you add or
+   edit an entry in the base data, add or update the matching `id` in the
+   `data/<story>.en.json` overlay (translate `context`, `meaning`,
+   `source.summary`, `listening.note`, and any `place.kind` / `certainty` /
+   `note`) and regenerate the `.en.js` mirror. The overlay's id set must stay a
+   subset of the base ids; never invent an overlay id with no base entry. See
+   the [Bilingual (i18n) Convention](../../README.md#bilingual-i18n-convention).
+   When translating, take *citations, not reproductions* — translate the facts
+   into your own concise wording and preserve every hedge.
 
 ## Wording Guidance
 

@@ -23,6 +23,26 @@ Use this skill to build a small static site from an Agent-Mappy dataset.
 - Search box that composes with filters.
 - Collection navigation for long lists.
 - Clear empty and loading states.
+- A language toggle when the story is bilingual (see "Bilingual layer" below).
+
+## Bilingual layer (optional)
+
+When the story ships in more than one language, follow the Agent-Mappy
+[Bilingual (i18n) Convention](../../README.md#bilingual-i18n-convention) instead
+of duplicating the dataset:
+
+- Keep UI strings (nav, headings, buttons, collection names, dynamic labels) in a
+  `t(key)` dictionary per language inside `script.js`; drive static markup with
+  `data-i18n*` attributes.
+- Keep per-entry prose in an English overlay `data/<story>.en.json`, an array
+  keyed by the same `id` as the base entry, carrying only translated fields
+  (`context`, `meaning`, `source.summary`, `listening.note`, `place.kind` /
+  `certainty` / `note`). Mirror it to `data/<story>.en.js` for `file://` use.
+- At render time, when the active language is the overlay's, shallow-merge the
+  overlay entry over the base entry by `id`; fall back to the base text when an
+  `id` is absent.
+- Persist the chosen language (e.g. `localStorage` + `html[data-lang]`) and
+  re-render data-driven sections on toggle.
 
 ## Build Workflow
 
@@ -56,6 +76,12 @@ explicitly rather than discovering them in production:
   jar in dark mode. Style the popup wrapper/tip to follow the page theme tokens.
 - **Selected entry invisible on the map.** When an entry is chosen from a list,
   highlight its marker (size/colour) so the map and the detail stay in sync.
+- **Language toggle clobbering live content.** A static-i18n pass that rewrites
+  every `data-i18n` node will overwrite JS-rendered text if those nodes share the
+  attribute. Only translate genuinely static chrome through `data-i18n`; for
+  JS-driven content (detail body, result counts, lists) localize inside the
+  render functions and re-render on language change. Capture the original
+  authoring-language text once so toggling back restores it.
 
 ## Verification
 

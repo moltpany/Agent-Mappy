@@ -1,7 +1,7 @@
 {
   "repository": "Agent-Mappy",
   "description": "Source-grounded map storytelling framework for agent-maintained static map narratives",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "target_platform": "Codex/OpenClaw-style agent workflows",
   "schemas": [
     {
@@ -99,6 +99,8 @@
     "github-pages",
     "case-study",
     "mozart-journey",
-    "beethoven-journey"
+    "beethoven-journey",
+    "bilingual",
+    "i18n"
   ]
 }

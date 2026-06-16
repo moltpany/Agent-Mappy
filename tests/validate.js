@@ -89,11 +89,41 @@ function validateRequiredFiles() {
   }
 }
 
+// Bilingual convention: an optional `<example>.en.json` overlay must be an array
+// of `{ id, ... }` objects whose ids are a SUBSET of the base example ids (every
+// overlay entry maps to a real base entry; missing ids are allowed and fall back
+// to the base language at runtime).
+function validateOverlays() {
+  const registry = readJson("agent-registry.json");
+  for (const example of registry.examples) {
+    const overlayRel = example.file.replace(/\.json$/, ".en.json");
+    if (!exists(overlayRel)) {
+      continue;
+    }
+    const base = readJson(example.file);
+    const overlay = readJson(overlayRel);
+    const baseIds = new Set(base.map((entry) => entry.id));
+    assert(Array.isArray(overlay), `${overlayRel} should be a JSON array`);
+    const seen = new Set();
+    for (const item of overlay) {
+      assert(item && item.id, `${overlayRel} every entry should have an id`);
+      assert(!seen.has(item.id), `${overlayRel} ids should be unique: ${item.id}`);
+      seen.add(item.id);
+      assert(baseIds.has(item.id), `${overlayRel} id has no base entry: ${item.id}`);
+      assert(
+        item.context || item.meaning || item.place || item.listening || item.source,
+        `${overlayRel} ${item.id} should carry at least one translated field`,
+      );
+    }
+  }
+}
+
 const tests = [
   validateRequiredFiles,
   validateRegistry,
   validateSchema,
   validateMozartExample,
+  validateOverlays,
   validateSkills,
 ];
 
